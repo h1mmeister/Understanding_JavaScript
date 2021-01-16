@@ -15,6 +15,23 @@ function createAndWriteLog(operator, resultBeforeCalc, calcNumber) {
   outputResult(currentResult, calcDescription);
 }
 
+function writeToLog(
+  operationIdentifier,
+  prevResult,
+  operationNumber,
+  newResult
+) {
+  const logEntry = {
+    operation: operationIdentifier,
+    prevResult: prevResult,
+    number: operationNumber,
+    result: newResult,
+  }; // this is an object in javascript
+
+  logEntries.push(logEntry);
+  console.log(logEntries);
+}
+
 // function declaration
 // Onr thing to note that we can use variables, constants, or functions defined in the global scope within our function add
 function add() {
@@ -23,19 +40,11 @@ function add() {
   currentResult += enteredNumber; // whatever we get from the user input would be a string, so here we are adding a string with a number with the  + operator that will basically do concatenation
   // we can use either parseInt or parseFloat or simply +. With +, it will automatically check and correspond whether it needs to convert the input to integer or float.
   createAndWriteLog("+", initialResult, enteredNumber);
+  writeToLog("ADD", initialResult, enteredNumber, currentResult);
 
   //const result = num1 + num2; // result is defined inside the function add and has a block scope, we can't use it outside this scope
   // alert(`The result is ${result}`);
   // return result; // return statements are used to stop the function's execution and any code after that will not execute
-  const logEntry = {
-    operation: "ADD",
-    prevResult: initialResult,
-    number: enteredNumber,
-    result: currentResult,
-  }; // this is an object in javascript
-
-  logEntries.push(logEntry);
-  console.log(logEntries);
 }
 
 function subtract() {
@@ -43,6 +52,7 @@ function subtract() {
   const initialResult = currentResult;
   currentResult -= enteredNumber;
   createAndWriteLog("-", initialResult, enteredNumber);
+  writeToLog("SUBTRACT", initialResult, enteredNumber, currentResult);
 }
 
 function multiply() {
@@ -50,6 +60,7 @@ function multiply() {
   const initialResult = currentResult;
   currentResult *= enteredNumber;
   createAndWriteLog("*", initialResult, enteredNumber);
+  writeToLog("MULTIPLY", initialResult, enteredNumber, currentResult);
 }
 
 function divide() {
@@ -57,6 +68,7 @@ function divide() {
   const initialResult = currentResult;
   currentResult /= enteredNumber;
   createAndWriteLog("/", initialResult, enteredNumber);
+  writeToLog("DIVIDE", initialResult, enteredNumber, currentResult);
 }
 
 addBtn.addEventListener("click", add); // here, we are telling the JavaScript engine that when the user clicks on the add button, then only execute the add function
