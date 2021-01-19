@@ -71,7 +71,7 @@ const displayMovements = function (movements) {
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">
         ${i + 1} ${type}</div>
-        <div class="movements__value">${mov}</div>
+        <div class="movements__value">${mov} INR </div>
       </div>
     `;
     containerMovements.insertAdjacentHTML("afterbegin", html);
@@ -79,6 +79,63 @@ const displayMovements = function (movements) {
 };
 
 displayMovements(account1.movements);
+
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce(function (acc, mov) {
+    return acc + mov;
+  }, 0);
+  labelBalance.textContent = `${balance} INR`;
+};
+
+calcDisplayBalance(account1.movements);
+
+const calcDisplaySummary = function (movements) {
+  const incomes = movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .reduce(function (acc, mov) {
+      return acc + mov;
+    }, 0);
+  labelSumIn.textContent = `${incomes} INR`;
+
+  const outcomes = movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+
+  labelSumOut.textContent = `${Math.abs(outcomes)} INR`;
+
+  const interest = movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .map(function (mov) {
+      return (mov * 1.2) / 100;
+    })
+    .filter(function (mov) {
+      return mov > 1;
+    })
+    .reduce(function (acc, mov) {
+      return acc + mov;
+    }, 0);
+
+  labelSumInterest.textContent = `${interest} INR`;
+};
+
+calcDisplaySummary(account1.movements);
+
+const createUserName = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(" ")
+      .map(usr => usr[0])
+      .join("");
+  });
+};
+
+createUserName(accounts);
+// console.log(accounts);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // LECTURES
@@ -176,3 +233,51 @@ displayMovements(account1.movements);
 // }); // Although we do not have index system in Sets that's why when we are logging the result, we are seeing the same value for the key and the element. Ideallly, we should not have the key in the definition but to not create confusion with forEach implementation, it's the same as for Maps and Arrays.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// //MAP method
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const euroConversion = 1.1;
+
+// const movementUSD = movements.map(mov => {
+//   return mov * euroConversion;
+// }); // It is same as forEach in the sense that we are using function as a parameter to the map method which we know is a higher order function. So, it will take each value in the movements array and apply a function on top of it and will create a new array.
+
+// console.log(movements);
+// console.log(movementUSD);
+
+// const movementUSDfor = [];
+// for (const mov of movements) {
+//   movementUSDfor.push(euroConversion * mov);
+// }
+// console.log(movementUSDfor);
+
+// const movementsDecription = movements.map((mov, i) => {
+//   return `Movement ${i + 1} : You ${
+//     mov > 0 ? "deposited" : "withdrew"
+//   } ${Math.abs(mov)}`;
+// });
+
+// console.log(movementsDecription);
+
+// // FILTER method
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const deposit = movements.filter(function (mov) { // will return boolean value and  push only values that accepts the condition mentioned
+//   return mov > 0;
+// });
+
+// console.log(movements);
+// console.log(deposit); // Similarly we can use the for of loop to do the same task
+
+// // REDUCE method
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const balance = movements.reduce(function (acc, mov) {
+//   // the second argrument is the initial value of the accumulator
+//   return acc + mov;
+// }, 0);
+// console.log(balance);
+
+// let balance2 = 0;
+// for (const mov of movements) {
+//   balance2 += mov;
+// }
+// console.log(balance2);
