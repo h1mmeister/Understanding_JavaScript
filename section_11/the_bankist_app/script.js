@@ -33,7 +33,14 @@ const account4 = {
   pin: 4444,
 };
 
-const accounts = [account1, account2, account3, account4];
+const account5 = {
+  owner: "Himanshu Yadav",
+  movements: [5000, -3400, -1500, 7900, -3210, 10000, 8500, -300],
+  interestRate: 2.1,
+  pin: 9890,
+};
+
+const accounts = [account1, account2, account3, account4, account5];
 
 // Elements
 const labelWelcome = document.querySelector(".welcome");
@@ -78,19 +85,15 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce(function (acc, mov) {
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce(function (acc, mov) {
     return acc + mov;
   }, 0);
-  labelBalance.textContent = `${balance} INR`;
+  labelBalance.textContent = `${acc.balance} INR`;
 };
 
-calcDisplayBalance(account1.movements);
-
-const calcDisplaySummary = function (movements) {
-  const incomes = movements
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements
     .filter(function (mov) {
       return mov > 0;
     })
@@ -99,18 +102,18 @@ const calcDisplaySummary = function (movements) {
     }, 0);
   labelSumIn.textContent = `${incomes} INR`;
 
-  const outcomes = movements
+  const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
 
   labelSumOut.textContent = `${Math.abs(outcomes)} INR`;
 
-  const interest = movements
+  const interest = acc.movements
     .filter(function (mov) {
       return mov > 0;
     })
     .map(function (mov) {
-      return (mov * 1.2) / 100;
+      return (mov * acc.interestRate) / 100;
     })
     .filter(function (mov) {
       return mov > 1;
@@ -121,8 +124,6 @@ const calcDisplaySummary = function (movements) {
 
   labelSumInterest.textContent = `${interest} INR`;
 };
-
-calcDisplaySummary(account1.movements);
 
 const createUserName = function (accs) {
   accs.forEach(function (acc) {
@@ -136,6 +137,53 @@ const createUserName = function (accs) {
 
 createUserName(accounts);
 // console.log(accounts);
+
+// Event Handlers
+
+let currentAccount;
+
+const updateUI = function (acc) {
+  displayMovements(acc.movements);
+  calcDisplayBalance(acc);
+  calcDisplaySummary(acc);
+};
+
+btnLogin.addEventListener("click", function (e) {
+  e.preventDefault(); // prevent form from submitting
+
+  currentAccount = accounts.find(function (acc) {
+    return acc.username === inputLoginUsername.value;
+  });
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }!`;
+    containerApp.style.opacity = 100;
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+    updateUI(currentAccount);
+  }
+});
+
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(function (acc) {
+    return acc.username === inputTransferTo.value;
+  });
+  inputTransferAmount.value = inputTransferTo.value = "";
+  inputTransferAmount.blur();
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    amount <= currentAccount.balance &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    updateUI(currentAccount);
+  }
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // LECTURES
@@ -281,3 +329,13 @@ createUserName(accounts);
 //   balance2 += mov;
 // }
 // console.log(balance2);
+
+// // FIND method
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const firstWithdrawal = movements.find(function (mov) {
+//   return mov < 0;
+// });
+
+// console.log(movements);
+// console.log(firstWithdrawal); // find method is similar as filter but it does not return a new array instead return the first element that holds the condition, i.e, -400
+// // We can use the find method on the objects as well
