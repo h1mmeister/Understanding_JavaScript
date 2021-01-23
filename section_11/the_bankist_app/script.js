@@ -139,7 +139,6 @@ createUserName(accounts);
 // console.log(accounts);
 
 // Event Handlers
-
 let currentAccount;
 
 const updateUI = function (acc) {
@@ -183,6 +182,37 @@ btnTransfer.addEventListener("click", function (e) {
     receiverAcc.movements.push(amount);
     updateUI(currentAccount);
   }
+});
+
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+
+  if (
+    amount > 0 &&
+    currentAccount.movements.some(function (acc) {
+      return acc >= amount * 0.1;
+    })
+  ) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = "";
+});
+
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+  if (
+    currentAccount.username === inputCloseUsername.value &&
+    currentAccount.pin === Number(inputClosePin.value)
+  ) {
+    const index = accounts.findIndex(function (acc) {
+      return acc.username === currentAccount.username;
+    });
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = "";
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,3 +369,31 @@ btnTransfer.addEventListener("click", function (e) {
 // console.log(movements);
 // console.log(firstWithdrawal); // find method is similar as filter but it does not return a new array instead return the first element that holds the condition, i.e, -400
 // // We can use the find method on the objects as well
+
+// SOME method
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// console.log(movements.includes(450));
+
+// const anyDeposit = movements.some(function (acc) {
+//   return acc > 400;
+// });
+// console.log(anyDeposit); // some method works like includes but for situations where we want to test apart from equality
+// We have
+// We have one more method - EVERY - which works same as SOME but it will only return tru if all the elements satisfies that condition
+
+// FLAT method
+// const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+// console.log(arr.flat()); // it will flatten the array
+
+// // flat
+// const overalBalance = accounts
+//   .map(acc => acc.movements)
+//   .flat()
+//   .reduce((acc, mov) => acc + mov, 0);
+// console.log(overalBalance); // flat has a depth parameter and we can tweak the depth level
+
+// // flatMap
+// const overalBalance2 = accounts
+//   .flatMap(acc => acc.movements)
+//   .reduce((acc, mov) => acc + mov, 0);
+// console.log(overalBalance2); // flatMap goes only one level deep
