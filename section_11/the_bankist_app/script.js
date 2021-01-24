@@ -70,9 +70,14 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = ""; // this will set the container empty
-  movements.forEach(function (mov, i) {
+  const movs = sort
+    ? movements.slice().sort(function (a, b) {
+        return a - b;
+      })
+    : movements;
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
     const html = `
       <div class="movements__row">
@@ -213,6 +218,13 @@ btnClose.addEventListener("click", function (e) {
     containerApp.style.opacity = 0;
   }
   inputCloseUsername.value = inputClosePin.value = "";
+});
+
+let sorted = false;
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,3 +409,25 @@ btnClose.addEventListener("click", function (e) {
 //   .flatMap(acc => acc.movements)
 //   .reduce((acc, mov) => acc + mov, 0);
 // console.log(overalBalance2); // flatMap goes only one level deep
+
+// // SORT method
+// const owners = ["Jonas", "Adam", "Martha", "Bob"];
+// console.log(owners.sort());
+
+// // console.log(owners); // Sort method mutates the original array - important
+
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// // console.log(movements.sort()); //  [-130, -400, -650, 1300, 200, 3000, 450, 70]
+// // Because Sort methods works on strings
+
+// // return < 0, A, B KEEP ORDER
+// // return > 0, B, A SWITCH ORDER
+// console.log(movements);
+// movements.sort((a, b) => {
+//   if (a > b) {
+//     return 1;
+//   } else {
+//     return -1;
+//   }
+// });
+// console.log(movements);
