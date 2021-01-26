@@ -42,6 +42,8 @@ function endRound() {
   }
 }
 
+// we can also reset the game with a bonus life
+
 function attackMonster(mode) {
   let maxDamage;
   if (mode === "ATTACK") {
