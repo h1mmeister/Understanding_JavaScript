@@ -160,7 +160,12 @@ function healPlayerHandler() {
 }
 
 function printLogHandler() {
-  console.log(battleLog);
+  // for (let i = 0; i < 2; i++) {
+  //   console.log("-------------");
+  // }
+  for (const lofEntry of battleLog) {
+    console.log(battleLog[0]); // no access to index, only to the element
+  }
 }
 
 attackBtn.addEventListener("click", attackHandler);
